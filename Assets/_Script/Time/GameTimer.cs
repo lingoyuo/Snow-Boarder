@@ -59,8 +59,7 @@ public class GameTimer : MonoBehaviour
     public void StopTimer()
     {
         timerIsRunning = false;
-        timerCompleteText.text = "Your time: " + GetElapsedTime();
-        elapsedTime = 0;
+        timerCompleteText.text = "Time: " + GetElapsedTime();
     }
 
     // Hàm lấy thời gian hoàn thành

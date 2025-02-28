@@ -5,6 +5,7 @@ public class PLayerPointReceive : PointReceive
 {
     public static PLayerPointReceive Instance { get; private set; }
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI scoreCompletedText;
 
     protected void Start()
     {
@@ -21,6 +22,11 @@ public class PLayerPointReceive : PointReceive
         //    WinManager.Instance.CheckWinCondition();
     }
 
+    public void SaveScore()
+    {
+        ScoreManager.SaveHighScore(this.point);
+    }
+
     private void UpdateScoreUI()
     {
         if (scoreText != null)
@@ -28,6 +34,15 @@ public class PLayerPointReceive : PointReceive
             if (this.point <= 0) this.point = 0;
 
             scoreText.text = "Score: " + this.point;
+        }
+    }
+
+    public void UpdateScoreCompletedUI()
+    {
+        SaveScore();
+        if (scoreCompletedText != null)
+        {
+            scoreCompletedText.text = "Your score: " + this.point;
         }
     }
 }

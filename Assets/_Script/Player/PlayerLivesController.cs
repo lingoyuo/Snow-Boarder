@@ -30,13 +30,14 @@ public class PlayerLivesController : MonoBehaviour
         }
     }
 
-    public void RemoveLive()
+    public void RemoveLive(int damage)
     {
         if (currentLive > 0)
         {
-            currentLive--;
+            currentLive -= damage;
             UpdateHeartsUI();
-            //WinManager.Instance.CheckLoseCondition();
+            if (WinManager.Instance != null)
+                WinManager.Instance.CheckLoseCondition();
         }
     }
 
