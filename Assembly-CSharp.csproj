@@ -91,6 +91,7 @@
     <Compile Include="Assets\_Script\UI\Main\LevelSelection.cs" />
     <Compile Include="Assets\_Script\Snowflake\SnowflakePointSender.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
+    <Compile Include="Assets\_Script\Player\DustTrail.cs" />
     <Compile Include="Assets\_Script\Player\PLayerPointReceive.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Assets\_Script\Audio\AudioManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
+    <Compile Include="Assets\_Script\Player\CrashDetector.cs" />
     <Compile Include="Assets\_Script\Snowflake\SnowflakeImpact.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />

@@ -17,6 +17,8 @@ public class WinManager : MonoBehaviour
 
     public void CheckWinCondition()
     {
+        if (DustTrail.Instance != null)
+            DustTrail.Instance.StopAudioSnowTrail();
         WinGame();
     }
 
@@ -24,6 +26,8 @@ public class WinManager : MonoBehaviour
     {
         if (PlayerLivesController.Instance.currentLive <= 0)
         {
+            if (DustTrail.Instance != null)
+                DustTrail.Instance.StopAudioSnowTrail();
             LoseGame();
         }
     }
@@ -38,7 +42,7 @@ public class WinManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    private void LoseGame()
+    public void LoseGame()
     {
         losePanel.SetActive(true);
         Time.timeScale = 0f;
