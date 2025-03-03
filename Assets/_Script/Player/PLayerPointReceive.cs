@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 public class PLayerPointReceive : PointReceive
@@ -10,6 +10,11 @@ public class PLayerPointReceive : PointReceive
     protected void Start()
     {
         Instance = this;
+        if (GameManagerPoint.Instance != null) {
+            this.point = GameManagerPoint.Instance.PlayerScore;
+            GameManagerPoint.Instance.SetStartScore(this.point);
+        }
+            
         UpdateScoreUI();
     }
 
@@ -17,6 +22,8 @@ public class PLayerPointReceive : PointReceive
     {
         base.AddPoint(point);
         UpdateScoreUI();
+        if (GameManagerPoint.Instance != null)
+            GameManagerPoint.Instance.PlayerScore = this.point;
 
         //if (scoreText != null && blastTheAsteroidsText != null)
         //    WinManager.Instance.CheckWinCondition();
@@ -25,6 +32,16 @@ public class PLayerPointReceive : PointReceive
     public void SaveScore()
     {
         ScoreManager.SaveHighScore(this.point);
+    }
+
+    public void ResetScore()
+    {
+        if (GameManagerPoint.Instance != null)
+        {
+            this.point = GameManagerPoint.Instance.StartScore; 
+            GameManagerPoint.Instance.PlayerScore = this.point; 
+        }
+        UpdateScoreUI();
     }
 
     private void UpdateScoreUI()
