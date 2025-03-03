@@ -19,4 +19,6 @@ public class TrapDamageSender : DameSender
             Destroy(transform.parent.gameObject);
         }
     }
+
+    
 }

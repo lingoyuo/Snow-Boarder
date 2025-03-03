@@ -44,6 +44,8 @@ public class WinManager : MonoBehaviour
 
     public void LoseGame()
     {
+        if (PLayerPointReceive.Instance != null)
+            PLayerPointReceive.Instance.ResetScore();
         losePanel.SetActive(true);
         Time.timeScale = 0f;
     }

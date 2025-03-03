@@ -14,6 +14,11 @@ public class PlayerMoving : MonoBehaviour
     private bool isGrounded = true;
     private float jumpHoldTime = 0f;
 
+    private int rotationCount = 0; 
+    public PLayerPointReceive playerPointReceive; 
+    public int pointPerRotation = 10;
+    private float accumulatedRotation = 0f;
+
     void Start()
     {
         if (transform.parent != null)
@@ -22,6 +27,7 @@ public class PlayerMoving : MonoBehaviour
         }
 
         surfaceEffector2D = FindAnyObjectByType<SurfaceEffector2D>();
+        playerPointReceive = FindAnyObjectByType<PLayerPointReceive>();
     }
 
     void Update()
@@ -59,10 +65,25 @@ public class PlayerMoving : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftArrow))
         {
             parentRb.AddTorque(torqueAmount);
+            TrackRotation();
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
             parentRb.AddTorque(-torqueAmount);
+            TrackRotation();
+        }
+    }
+
+    void TrackRotation()
+    {
+        accumulatedRotation += parentRb.angularVelocity * Time.deltaTime;
+
+        // Kiểm tra vòng quay
+        if (Mathf.Abs(accumulatedRotation) >= 360f)
+        {
+            rotationCount += Mathf.FloorToInt(Mathf.Abs(accumulatedRotation) / 360f);
+            accumulatedRotation %= 360f; // Giữ góc xoay trong phạm vi 360 độ
+            playerPointReceive.AddPoint(pointPerRotation); // Cộng điểm
         }
     }
 
@@ -92,6 +113,7 @@ public class PlayerMoving : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+            rotationCount = 0;
         }
     }
 

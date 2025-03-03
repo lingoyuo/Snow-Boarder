@@ -56,4 +56,24 @@ public class PlayerLivesController : MonoBehaviour
             heart.SetActive(true);
         }
     }
+
+    private void OnTriggerEnter(UnityEngine.Collider other)
+    {
+        if (other.CompareTag("Trap"))
+        {
+            if (PlayerManager.Instance != null && PlayerManager.Instance.animator != null)
+            {
+                PlayerManager.Instance.animator.SetBool("IsTrap", true);
+                Invoke("ResetTrapState", 0.5f);
+            }
+        }
+    }
+
+    private void ResetTrapState()
+    {
+        if (PlayerManager.Instance != null && PlayerManager.Instance.animator != null)
+        {
+            PlayerManager.Instance.animator.SetBool("IsTrap", false);
+        }
+    }
 }
