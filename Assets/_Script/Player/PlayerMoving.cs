@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using TMPro;
+using UnityEngine;
 
 public class PlayerMoving : MonoBehaviour
 {
-    [SerializeField] float torqueAmount = 30f;
+    [SerializeField] float torqueAmount = 100f;
     [SerializeField] float boostSpeed = 30f;
     [SerializeField] float baseSpeed = 20f;
     [SerializeField] float jumpForce = 5f;
@@ -18,6 +20,8 @@ public class PlayerMoving : MonoBehaviour
     public PLayerPointReceive playerPointReceive; 
     public int pointPerRotation = 10;
     private float accumulatedRotation = 0f;
+
+    public TextMeshProUGUI pointPerRotationText;
 
     void Start()
     {
@@ -62,14 +66,16 @@ public class PlayerMoving : MonoBehaviour
 
     void RotateParent()
     {
+        float currentTorque = torqueAmount / (1 + Mathf.Abs(parentRb.angularVelocity) * 0.1f); 
+
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            parentRb.AddTorque(torqueAmount);
+            parentRb.AddTorque(currentTorque);
             TrackRotation();
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            parentRb.AddTorque(-torqueAmount);
+            parentRb.AddTorque(-currentTorque);
             TrackRotation();
         }
     }
@@ -79,12 +85,20 @@ public class PlayerMoving : MonoBehaviour
         accumulatedRotation += parentRb.angularVelocity * Time.deltaTime;
 
         // Kiểm tra vòng quay
-        if (Mathf.Abs(accumulatedRotation) >= 360f)
+        if (Mathf.Abs(accumulatedRotation) >= 180f)
         {
-            rotationCount += Mathf.FloorToInt(Mathf.Abs(accumulatedRotation) / 360f);
-            accumulatedRotation %= 360f; // Giữ góc xoay trong phạm vi 360 độ
+            rotationCount += Mathf.FloorToInt(Mathf.Abs(accumulatedRotation) / 180f);
+            accumulatedRotation %= 180f; // Giữ góc xoay trong phạm vi 180 độ
+            StartCoroutine(ShowAndHidePointText());
             playerPointReceive.AddPoint(pointPerRotation); // Cộng điểm
         }
+    }
+
+    IEnumerator ShowAndHidePointText()
+    {
+        pointPerRotationText.text = "+" + pointPerRotation; // Hiển thị điểm
+        yield return new WaitForSeconds(1f); // Chờ 1 giây (hoặc thời gian bạn muốn)
+        pointPerRotationText.text = ""; // Ẩn điểm
     }
 
     void HandleJump()
