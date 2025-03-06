@@ -49,20 +49,27 @@ public class PlayerMoving : MonoBehaviour
         canMove = false;
     }
 
+    // down để giảm tốc
+
     private void RespondToBoost()
     {
         if (surfaceEffector2D != null)
         {
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                surfaceEffector2D.speed = boostSpeed;
+                surfaceEffector2D.speed = boostSpeed; // Tăng tốc
+            }
+            else if (Input.GetKey(KeyCode.DownArrow))
+            {
+                surfaceEffector2D.speed = baseSpeed / 2; // Giảm tốc độ xuống 50%
             }
             else
             {
-                surfaceEffector2D.speed = baseSpeed;
+                surfaceEffector2D.speed = baseSpeed; // Tốc độ bình thường
             }
         }
     }
+
 
     void RotateParent()
     {
@@ -80,47 +87,57 @@ public class PlayerMoving : MonoBehaviour
         }
     }
 
+
+
+    //đặt giới hạn chỉ cộng điểm khi đang ở trên không.
+    //Chỉ tính điểm khi isGrounded == false, tránh lạm dụng cộng điểm khi tiếp đất.
     void TrackRotation()
     {
-        accumulatedRotation += parentRb.angularVelocity * Time.deltaTime;
-
-        // Kiểm tra vòng quay
-        if (Mathf.Abs(accumulatedRotation) >= 180f)
+        if (!isGrounded) // Chỉ tính điểm khi ở trên không
         {
-            rotationCount += Mathf.FloorToInt(Mathf.Abs(accumulatedRotation) / 180f);
-            accumulatedRotation %= 180f; // Giữ góc xoay trong phạm vi 180 độ
-            StartCoroutine(ShowAndHidePointText());
-            playerPointReceive.AddPoint(pointPerRotation); // Cộng điểm
+            accumulatedRotation += parentRb.angularVelocity * Time.deltaTime;
+
+            if (Mathf.Abs(accumulatedRotation) >= 180f)
+            {
+                rotationCount += Mathf.FloorToInt(Mathf.Abs(accumulatedRotation) / 180f);
+                accumulatedRotation %= 180f;
+                StartCoroutine(ShowAndHidePointText("+" + pointPerRotation));
+                playerPointReceive.AddPoint(pointPerRotation);
+            }
         }
     }
 
-    IEnumerator ShowAndHidePointText()
+
+    IEnumerator ShowAndHidePointText(string pointText)
     {
-        pointPerRotationText.text = "+" + pointPerRotation; // Hiển thị điểm
-        yield return new WaitForSeconds(1f); // Chờ 1 giây (hoặc thời gian bạn muốn)
-        pointPerRotationText.text = ""; // Ẩn điểm
+        pointPerRotationText.text = pointText;
+        yield return new WaitForSeconds(1f);
+        pointPerRotationText.text = "";
     }
+
 
     void HandleJump()
     {
-        if (isGrounded)
+        if (isGrounded && Input.GetKey(KeyCode.Space))
         {
-            if (Input.GetKey(KeyCode.Space))
-            {
-                // Giữ Space để tăng lực nhảy
-                jumpHoldTime += Time.deltaTime * jumpChargeRate;
-                jumpHoldTime = Mathf.Clamp(jumpHoldTime, jumpForce, maxJumpForce);
-            }
+            jumpHoldTime += Time.deltaTime * jumpChargeRate;
+            jumpHoldTime = Mathf.Clamp(jumpHoldTime, jumpForce, maxJumpForce);
+        }
 
-            if (Input.GetKeyUp(KeyCode.Space))
-            {
-                // Khi thả Space thì nhảy với lực đã nạp
-                parentRb.linearVelocity = new Vector2(parentRb.linearVelocity.x, jumpHoldTime);
-                isGrounded = false;
-                jumpHoldTime = jumpForce; // Reset lực nhảy về giá trị tối thiểu
-            }
+        if (isGrounded && Input.GetKeyUp(KeyCode.Space))
+        {
+            parentRb.linearVelocity = new Vector2(parentRb.linearVelocity.x, jumpHoldTime);
+            isGrounded = false;
+            jumpHoldTime = jumpForce;
         }
     }
+
+    /*
+     Khi va vào chướng ngại vật (Obstacle), tốc độ bị giảm đi 50%.
+Hiển thị điểm -10 trên màn hình.
+Trừ điểm người chơi.
+
+     */
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -129,7 +146,23 @@ public class PlayerMoving : MonoBehaviour
             isGrounded = true;
             rotationCount = 0;
         }
+        else if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            Debug.Log("Va chạm với chướng ngại vật! Bị đẩy ra sau.");
+
+            // Giảm tốc độ + đẩy ngược về phía sau
+            float knockbackForce = -5f; // Lực đẩy ngược về sau
+            float upwardForce = 2f; // Lực đẩy nhẹ lên trên
+
+            parentRb.linearVelocity = new Vector2(knockbackForce, upwardForce);
+
+            // Hiển thị -10 điểm
+            StartCoroutine(ShowAndHidePointText("-10"));
+            playerPointReceive.AddPoint(-10);
+        }
+
     }
+
 
     private void OnCollisionExit2D(Collision2D collision)
     {
