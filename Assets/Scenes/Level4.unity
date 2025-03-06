@@ -3398,7 +3398,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a474989b7d0651b44a554bd66a7bad3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxLive: 10
+  maxLive: 3
   currentLive: 3
   heartPrefab: {fileID: 557078301}
   heartsContainer: {fileID: 712601334}
