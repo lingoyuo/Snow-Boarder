@@ -57,6 +57,10 @@ public class PlayerMoving : MonoBehaviour
             {
                 surfaceEffector2D.speed = boostSpeed;
             }
+            else if (Input.GetKey(KeyCode.DownArrow))
+            {
+                surfaceEffector2D.speed = baseSpeed / 2; 
+            }
             else
             {
                 surfaceEffector2D.speed = baseSpeed;
